@@ -45,6 +45,9 @@ public class CheckersModel implements Model
     {
         board = new Tile[dimension][dimension];
         pieces = new ArrayList(dimension * 3);
+        for(int i=0;i<dimension;++i)
+            for(int j=0;j<dimension;++j)
+                board[i][j]= new Tile();
     }
     
     
