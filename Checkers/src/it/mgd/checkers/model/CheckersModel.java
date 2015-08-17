@@ -44,10 +44,14 @@ public class CheckersModel implements Model
     public CheckersModel()
     {
         board = new Tile[dimension][dimension];
-        pieces = new ArrayList(dimension * 3);
+
         for(int i=0;i<dimension;++i)
             for(int j=0;j<dimension;++j)
                 board[i][j]= new Tile();
+        
+        pieces = new ArrayList();
+        for(int i=0;i<dimension * 3;++i)
+            pieces.add(new Piece());
     }
     
     
@@ -60,16 +64,15 @@ public class CheckersModel implements Model
     public void Start()
     {
         for(int i = 0; i < 3; ++i){
-            for(int j = i%2, k = i*dimension; j < dimension; j+=2,k+=2)
+            for(int j = i%2, k = i*dimension; j < dimension; j+=2,++k)
             {
-                Piece tmp = new Piece();
+                Piece tmp = pieces.get(k);
                 tmp.SetColor("WHITE");
                 tmp.SetX(i);
                 tmp.SetY(j);
                 board[i][j].Occupy(tmp);
                 pieces.add(tmp);
-
-                tmp = new Piece();
+                tmp = pieces.get(++k);
                 tmp.SetColor("BLACK");
                 tmp.SetX(dimension-1-i);
                 tmp.SetY(j);
