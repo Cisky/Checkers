@@ -5,11 +5,14 @@
  */
 package it.mgd.checkers.model;
 
+import it.mgd.checkers.View.View;
+
 /**
  *
  * @author Giuliano
  */
-public interface Model {
+public interface Model 
+{
  
     public void Start();
     public void MovePiece(int x,int y,int fx,int fy);

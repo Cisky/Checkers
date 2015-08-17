@@ -1,59 +1,65 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.mgd.checkers.model;
 
 /**
  *
  * @author Giuliano
  */
-public class Piece {
+public class Piece 
+{
     private String color;
     private boolean isKing;
     private int posX,posY;
     
-    public Piece(){
+    public Piece()
+    {
         color = null;
         isKing = false;
         posX = 0;
         posY = 0;
     }
     
-    public boolean IsKing(){
+    public boolean IsKing()
+    {
         return isKing;
     }
     
-    public boolean IsMan(){
+    public boolean IsMan()
+    {
         return !isKing;
     }
     
-    public void Promote(){
+    public void Promote()
+    {
         isKing = true;
     }
     
-    public void SetX(int x){
+    public void SetX(int x)
+    {
         posX = x;
     }
     
-    public int GetX(){
+    public int GetX()
+    {
         return posX;
     }
     
-    public void SetY(int y){
+    public void SetY(int y)
+    {
         posY = y;
     }
     
-    public int GetY(){
+    public int GetY()
+    {
         return posY;
     }
     
-    public void SetColor(String Col){
+    public void SetColor(String Col)
+    {
         color = Col;
     }
     
-    public String GetColor(){
+    public String GetColor()
+    {
         return color;
     }
 }

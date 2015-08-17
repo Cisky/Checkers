@@ -6,28 +6,29 @@
 package it.mgd.checkers.controller;
 import it.mgd.checkers.model.Model;
 import it.mgd.checkers.model.Piece;
-import it.mgd.checkers.view.View;
+import it.mgd.checkers.View.View;
 /**
  *
  * @author Giuliano
  */
-public class CheckersController implements Controller {
-   
-    public CheckersController(View view, Model model){
+public class CheckersController implements Controller 
+{
+    public CheckersController(View view, Model model)
+    {
         this.model = model;
         this.view = view;
         view.SetController(this);
     }
     
     @Override
-    public void OnNewGame(){
+    public void OnNewGame()
+    {
         model.Start();
-        view.Update();
     }
        
     @Override
-    public void OnDragAndDrop(int initialX,int initialY,int finalX,int finalY){
-        
+    public void OnDragAndDrop(int initialX,int initialY,int finalX,int finalY)
+    {
         switch(ValidateMove(initialX,initialY,finalX,finalY)){
             case MOVE:
                 model.MovePiece(initialX,initialY,finalX,finalY);
@@ -47,17 +48,16 @@ public class CheckersController implements Controller {
             default:
                 break;
         }
-        view.Update();
     }
     
-    private MoveType ValidateMove(int x,int y,int fx,int fy){
-    
-    MoveType result = MoveType.INVALID;
-    int diffy,diffx;
-    diffy = fy-y;
-    diffx = fx-x;
-    if(!model.IsOccupied(fx,fy)||Math.abs(diffy)==Math.abs(diffx)){
-        Piece piece = model.PieceAt(x, y);
+    private MoveType ValidateMove(int x,int y,int fx,int fy)
+    {
+        MoveType result = MoveType.INVALID;
+        int diffy,diffx;
+        diffy = fy-y;
+        diffx = fx-x;
+        if(!model.IsOccupied(fx,fy)||Math.abs(diffy)==Math.abs(diffx)){
+            Piece piece = model.PieceAt(x, y);
 
         switch(diffy){
             case 1:
@@ -120,7 +120,8 @@ public class CheckersController implements Controller {
         return result;
     }
     
-    private enum MoveType{
+    private enum MoveType
+    {
         INVALID,
         MOVE,
         CAPTURE
@@ -128,5 +129,4 @@ public class CheckersController implements Controller {
 
     private final Model model;
     private final View view;
-    
 }
