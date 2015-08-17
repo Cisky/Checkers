@@ -24,6 +24,7 @@ public class CheckersController implements Controller
     public void OnNewGame()
     {
         model.Start();
+
     }
        
     @Override

@@ -63,21 +63,28 @@ public class CheckersModel implements Model
     @Override
     public void Start()
     {
+        Piece tmp;
+        int k=0;
         for(int i = 0; i < 3; ++i){
-            for(int j = i%2, k = i*dimension; j < dimension; j+=2,++k)
-            {
-                Piece tmp = pieces.get(k);
+            for(int j = i%2; j < dimension; j+=2,++k){
+                tmp = pieces.get(k);
                 tmp.SetColor("WHITE");
-                tmp.SetX(i);
-                tmp.SetY(j);
-                board[i][j].Occupy(tmp);
-                pieces.add(tmp);
-                tmp = pieces.get(++k);
-                tmp.SetColor("BLACK");
                 tmp.SetX(dimension-1-i);
                 tmp.SetY(j);
-                board[dimension-1-i][j].Occupy(tmp);
+                board[j][dimension-1-i].Occupy(tmp);
                 pieces.add(tmp);
+          
+            }
+        }
+        for(int i = 0; i < 3; ++i){
+            for(int j = (i+1)%2; j < dimension; j+=2,++k){
+                tmp = pieces.get(k);
+                tmp.SetColor("BLACK");
+                tmp.SetX(i);
+                tmp.SetY(j);
+                board[j][i].Occupy(tmp);
+                pieces.add(tmp);
+           
             }
         }
     }

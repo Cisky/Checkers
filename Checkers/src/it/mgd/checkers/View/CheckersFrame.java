@@ -27,9 +27,9 @@ public class CheckersFrame extends JFrame
     public CheckersFrame() 
     {
         setTitle("Checkers");
-
-        View view = createBoard();
         model = new CheckersModel();
+        View view = createBoard();
+        
         controller = new CheckersController(view, model);
         
         setIconImage(new ImageIcon("assets/WhiteDama.png").getImage());

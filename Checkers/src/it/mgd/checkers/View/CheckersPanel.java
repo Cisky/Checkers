@@ -79,9 +79,9 @@ public class CheckersPanel extends JPanel implements View
                 layeredPane.add(checker[row][column], 0);
             }   
             
-//        for (int column = 0; column < cellsNumber; column++)
-//            for (int row = 0; row < cellsNumber; row++) 
-//                loadPieceAt(row, column, model.PieceAt(row, column));
+    //    for (int column = 0; column < cellsNumber; column++)
+    //        for (int row = 0; row < cellsNumber; row++) 
+    //            loadPieceAt(row, column, model.PieceAt(row, column));
 
         add(layeredPane);
     }
@@ -89,11 +89,18 @@ public class CheckersPanel extends JPanel implements View
     private void loadPieceAt(int row, int column, Piece value) 
     {
         ImageIcon cellIcon = null;
-//        if (value == 1)
-//            cellIcon  = new ImageIcon("assets/WhitePawn.png");
-//        else if (value == 2)
-//            cellIcon = new ImageIcon("assets/BlackPawn.png");
-       
+        if (value != null)
+            switch(value.GetColor())
+            {
+                case "WHITE":
+                    cellIcon  = new ImageIcon("assets/WhitePawn.png");
+                    break;
+                case "BLACK":
+                    cellIcon = new ImageIcon("assets/BlackPawn.png");
+                     break;
+                default:
+                    break;
+            }
         if(cellIcon != null)
         {
             Image img = cellIcon.getImage();
