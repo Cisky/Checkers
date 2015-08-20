@@ -69,28 +69,7 @@ public class CheckersController implements Controller {
             view.update();
         }
     }
-    
-    //PROTECTED MEMBER FUNCTION
-    
-    //NEEDED FOR TEST
-    protected static MoveType GetMove(){
-        return MoveType.MOVE;
-    }
-    
-    //NEEDED FOR TEST
-    protected static MoveType GetCapture(){
-        return MoveType.CAPTURE;
-    }
-    
-    //NEEDED FOR TEST
-    protected static MoveType GetInvalid(){
-        return MoveType.INVALID;
-    }
-    
-    protected MoveType ValidateMoveTest(int x,int y,int finalX,int finalY){
-        return validateMove(x,y,finalX,finalY);
-    }
-    
+        
     //PRIVATE MEMBER FUNCTION
     private void selectPiece(int x, int y){
         pieceSelectedX = x;
