@@ -118,6 +118,5 @@ public class CheckersFrame extends JFrame{
     //MEMBER
     private final CheckersModel model;
     private final Controller controller;
-    private Point framePosition;
-    
+    private Point framePosition;    
 }

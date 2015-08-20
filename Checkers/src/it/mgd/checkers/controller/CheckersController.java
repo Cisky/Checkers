@@ -4,17 +4,18 @@
 **************************/
 package it.mgd.checkers.controller;
 
+import it.mgd.checkers.Utils.Utils;
 import it.mgd.checkers.model.Model;
 import it.mgd.checkers.model.Piece;
 import static it.mgd.checkers.model.Piece.PieceColor.BLACK;
 import static it.mgd.checkers.model.Piece.PieceColor.WHITE;
 import it.mgd.checkers.View.View;
+import it.mgd.checkers.model.Piece.PieceColor;
 
 import static java.lang.Math.abs;
 
 
 public class CheckersController implements Controller {
-
 
     //CONSTRUCTOR
     public CheckersController(View view, Model model){
@@ -34,7 +35,7 @@ public class CheckersController implements Controller {
        
     @Override
     public void onClick(int x, int y){
-       if(model.pieceAt(x, y) != null&&CheckTurn(model.pieceAt(x, y).getColor())){
+       if(model.pieceAt(x, y) != null&&checkTurn(model.pieceAt(x, y).getColor())){
           
             if(!isPieceSelected){
                 selectPiece(x, y);
@@ -45,11 +46,13 @@ public class CheckersController implements Controller {
             }
            
         }else if(isPieceSelected){
+            deselectPiece();
+            
             switch(validateMove(pieceSelectedX, pieceSelectedY, x, y)){
                 case MOVE:
                     model.movePiece(pieceSelectedX, pieceSelectedY, x, y);
                     isWhiteTurn=!isWhiteTurn;
-                    PromotionCheck(x,y,model.pieceAt(x,y).getColor());
+                    promotionCheck(x,y,model.pieceAt(x,y).getColor());
                     break;
 
                 case CAPTURE:
@@ -58,14 +61,13 @@ public class CheckersController implements Controller {
                     pieceSelectedY += (y - pieceSelectedY) / 2;
                     model.capture(pieceSelectedX, pieceSelectedY);
                     isWhiteTurn=!isWhiteTurn;
-                    PromotionCheck(x,y,model.pieceAt(x,y).getColor());
+                    promotionCheck(x,y,model.pieceAt(x,y).getColor());
                     break;
 
                 case INVALID:
                     view.invalidMove(x, y);
                     break;
             }      
-            deselectPiece();
             view.update();
         }
     }
@@ -167,14 +169,13 @@ public class CheckersController implements Controller {
         return result;
     } 
     
-    
-    private boolean CheckTurn(Piece.PieceColor color){
+    private boolean checkTurn(PieceColor color){
         return (isWhiteTurn && color == WHITE) || (!isWhiteTurn && color == BLACK);
     }
     
-    private void PromotionCheck(int posX,int posY,Piece.PieceColor color){
-        if((posY==0&&color==BLACK)||(posY==7&&color==WHITE)){
-                model.pieceAt(posX,posY).promote();
+    private void promotionCheck(int posX, int posY, PieceColor color){
+        if((posY == 0 && color == BLACK)||(posY == Utils.numberOfCells - 1 && color == WHITE)){
+            model.pieceAt(posX,posY).promote();
         }   
     }
    
@@ -191,6 +192,4 @@ public class CheckersController implements Controller {
         MOVE,
         CAPTURE
     }
-    
-    
 }
