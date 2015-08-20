@@ -1,9 +1,10 @@
-/***********************************************************
-*  Checkers Project Fundamentals of Software Engineering.  * 
-*  Francesco Battipaglia                                   *
-*  Giuliano Focchiatti                                     *
-************************************************************/
+/***************************************************************
+*  Checkers - Project of Fundamentals of Software Engineering  * 
+*  Francesco Battipaglia                                       *
+*  Giuliano Focchiatti                                         *
+****************************************************************/
 package it.mgd.checkers;
+
 import it.mgd.checkers.View.CheckersFrame;
 
 import java.awt.EventQueue;

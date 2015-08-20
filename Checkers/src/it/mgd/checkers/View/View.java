@@ -1,16 +1,17 @@
+/**************************
+*  Francesco Battipaglia  *
+*  Giuliano Focchiatti    *
+**************************/
 package it.mgd.checkers.View;
 
 import it.mgd.checkers.controller.Controller;
 import it.mgd.checkers.model.Model;
 
-/**
- *
- * @author Francesco Battipaglia
- */
-
 public interface View
 {
-	Model GetModel();
-        
-	void SetController(Controller controller);
+    public Model getModel();
+
+    public void setController(Controller controller);
+    
+    public void update();
 }
