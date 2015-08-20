@@ -9,7 +9,6 @@ import it.mgd.checkers.model.Model;
 import it.mgd.checkers.model.Piece;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;

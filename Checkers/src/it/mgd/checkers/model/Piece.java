@@ -42,7 +42,6 @@ public class Piece {
                 setLabel("assets/BlackDama.png");
                 break;
         }
- 
     }
     
     public int getX(){
