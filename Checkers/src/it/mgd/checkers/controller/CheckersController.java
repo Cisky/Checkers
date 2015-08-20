@@ -165,8 +165,7 @@ public class CheckersController implements Controller {
     private int pieceSelectedY;
     private boolean isWhiteTurn;
     
-    private enum MoveType
-    {
+    private enum MoveType{
         INVALID,
         MOVE,
         CAPTURE
