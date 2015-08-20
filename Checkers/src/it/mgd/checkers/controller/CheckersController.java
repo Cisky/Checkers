@@ -150,6 +150,8 @@ public class CheckersController implements Controller
         }
         else if(isPieceSelected)
         {
+            deselectPiece();
+
             switch(validateMove(pieceSelectedX, pieceSelectedY, x, y))
             {
                 case MOVE:
@@ -164,7 +166,6 @@ public class CheckersController implements Controller
                     break;
 
                 case INVALID:
-                    deselectPiece();
                     view.invalidMove(x, y);
                     break;
             }
