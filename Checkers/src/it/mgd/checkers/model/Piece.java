@@ -1,15 +1,25 @@
+/**************************
+*  Francesco Battipaglia  *
+*  Giuliano Focchiatti    *
+**************************/
 package it.mgd.checkers.model;
 
-/**
- *
- * @author Giuliano
- */
 public class Piece 
 {
-    private String color;
-    private boolean isKing;
-    private int posX,posY;
+    //ENUM
+    public enum PieceColor
+    {
+        BLACK,
+        WHITE
+    }
     
+    //MEMBER
+    private PieceColor color;
+    private boolean isKing;
+    private int posX;
+    private int posY;
+    
+    //CONSTRUCTOR
     public Piece()
     {
         color = null;
@@ -18,48 +28,49 @@ public class Piece
         posY = 0;
     }
     
-    public boolean IsKing()
+    //MEMBER FUNCTION
+    public boolean isKing()
     {
         return isKing;
     }
     
-    public boolean IsMan()
+    public boolean isMan()
     {
         return !isKing;
     }
     
-    public void Promote()
+    public void promote()
     {
         isKing = true;
     }
     
-    public void SetX(int x)
-    {
-        posX = x;
-    }
-    
-    public int GetX()
+    public int getX()
     {
         return posX;
     }
     
-    public void SetY(int y)
-    {
-        posY = y;
-    }
-    
-    public int GetY()
+    public int getY()
     {
         return posY;
     }
     
-    public void SetColor(String Col)
+    public void setX(int x)
     {
-        color = Col;
+        posX = x;
     }
     
-    public String GetColor()
+    public void setY(int y)
+    {
+        posY = y;
+    }
+    
+    public PieceColor getColor()
     {
         return color;
+    }
+    
+    public void setColor(PieceColor color)
+    {
+        this.color = color;
     }
 }
