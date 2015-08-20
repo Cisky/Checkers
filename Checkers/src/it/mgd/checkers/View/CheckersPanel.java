@@ -79,9 +79,9 @@ public class CheckersPanel extends JPanel implements View
                 layeredPane.add(checker[row][column], 0);
             }   
             
-    //    for (int column = 0; column < cellsNumber; column++)
-    //        for (int row = 0; row < cellsNumber; row++) 
-    //            loadPieceAt(row, column, model.PieceAt(row, column));
+        //for (int column = 0; column < cellsNumber; column++)
+        //    for (int row = 0; row < cellsNumber; row++) 
+        //        loadPieceAt(row, column, model.PieceAt(row, column));
 
         add(layeredPane);
     }
@@ -94,7 +94,7 @@ public class CheckersPanel extends JPanel implements View
             {
                 case "WHITE":
                     cellIcon  = new ImageIcon("assets/WhitePawn.png");
-                    break;
+                     break;
                 case "BLACK":
                     cellIcon = new ImageIcon("assets/BlackPawn.png");
                      break;
@@ -124,8 +124,8 @@ public class CheckersPanel extends JPanel implements View
                         originalPositionX = pieceLabel.getX();
                         originalPositionY = pieceLabel.getY();
                         
-//                        if (controller != null)
-//                            controller.OnDragAndDrop(row, column, );
+                        if (controller != null)
+                            controller.OnDragAndDrop(originalPositionX, originalPositionY,draggedAtX,draggedAtY );
                     }
 
                     @Override

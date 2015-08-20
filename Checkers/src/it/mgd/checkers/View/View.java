@@ -11,6 +11,6 @@ import it.mgd.checkers.model.Model;
 public interface View
 {
 	Model GetModel();
-        
+
 	void SetController(Controller controller);
 }

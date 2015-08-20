@@ -49,6 +49,7 @@ public class CheckersController implements Controller
             default:
                 break;
         }
+
     }
     
     private MoveType ValidateMove(int x,int y,int fx,int fy)
