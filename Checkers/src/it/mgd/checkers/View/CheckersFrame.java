@@ -14,6 +14,12 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseMotionListener;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -27,7 +33,8 @@ public class CheckersFrame extends JFrame
     //MEMBER
     private final CheckersModel model;
     private final Controller controller;
-
+    private Point framePosition;
+    
     //CONSTRUCTOR
     public CheckersFrame() 
     {
@@ -36,6 +43,8 @@ public class CheckersFrame extends JFrame
         controller = new CheckersController(view, model);
         controller.onNewGame();
         
+        framePosition = null;
+
         setIconImage(new ImageIcon("assets/WhiteDama.png").getImage());
         setUndecorated(true);
         pack();
@@ -61,6 +70,25 @@ public class CheckersFrame extends JFrame
         menu.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK));
         menu.add(newGame, constraintsNewGame);
         menu.add(exitGame, constraintsExitGame);
+        
+        menu.addMouseListener(new MouseAdapter()
+                {
+                    @Override
+                    public void mousePressed(MouseEvent evt)
+                    {
+                        framePosition = evt.getPoint();
+                    }
+                });
+        
+        menu.addMouseMotionListener(new MouseMotionAdapter()
+            {
+                @Override
+                public void mouseDragged(MouseEvent evt)
+                {
+                    Point currCoords = evt.getLocationOnScreen();
+                    setLocation(currCoords.x - framePosition.x, currCoords.y - framePosition.y);
+                }
+            });
         
         add(menu, BorderLayout.PAGE_START);
     }

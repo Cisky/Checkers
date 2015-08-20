@@ -14,4 +14,12 @@ public interface View
     public void setController(Controller controller);
     
     public void update();
+    
+    public void selectCell(int x, int y);
+    
+    public void invalidMove(int x, int y);
+
+    public void deselectCell(int x, int y);
+
+    public void deselectAllCells();
 }

@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
@@ -20,7 +21,9 @@ import javax.swing.JPanel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 public class CheckersPanel extends JPanel implements View
 {
@@ -53,13 +56,20 @@ public class CheckersPanel extends JPanel implements View
         for (int y = 0; y < cellsNumber; ++y)
             for (int x = 0; x < cellsNumber; ++x) 
             {
+                board[x][y] = new JButton();
                 ImageIcon cellIcon;
                 if ((x % 2 == 1 && y % 2 == 1) || (x % 2 == 0 && y % 2 == 0))
+                {
+                    board[x][y].setBackground(Color.WHITE);
                     cellIcon = loadIcon("assets/White.png", cellsSize, cellsSize);
+                }
                 else
+                {
+                    board[x][y].setBackground(Color.BLACK);
                     cellIcon = loadIcon("assets/Black.png", cellsSize, cellsSize);
-                
-                board[x][y] = new JButton(cellIcon);
+                }
+
+                board[x][y].setIcon(cellIcon);
                 board[x][y].setBorder(new EmptyBorder(0, 0, 0, 0));
                 
                 add(board[x][y]);
@@ -72,7 +82,6 @@ public class CheckersPanel extends JPanel implements View
         if (value != null)
             switch(value.getColor())
             {
-
                 case WHITE:
                     cellIcon = loadIcon("assets/WhitePawn.png", cellsSize / 2, cellsSize / 2);
                     break;
@@ -144,5 +153,53 @@ public class CheckersPanel extends JPanel implements View
             }
 
         revalidate();
+    }
+    
+    @Override
+    public void selectCell(int x, int y)
+    {
+        board[x][y].setIcon(loadIcon("assets/Selected.png", cellsSize, cellsSize));
+        board[x][y].setBorder(new LineBorder(Color.BLACK));
+    }
+    
+    @Override
+    public void deselectCell(int x, int y)
+    {
+        if(board[x][y].getBackground() == Color.BLACK)
+            board[x][y].setIcon(loadIcon("assets/Black.png", cellsSize, cellsSize));
+        else
+            board[x][y].setIcon(loadIcon("assets/White.png", cellsSize, cellsSize));
+
+        board[x][y].setBorder(new EmptyBorder(0, 0, 0, 0));
+    }
+
+    @Override
+    public void deselectAllCells()
+    {
+        for (int y = 0; y < cellsNumber; ++y)
+            for (int x = 0; x < cellsNumber; ++x) 
+                deselectCell(x, y);
+    }
+
+    @Override
+    public void invalidMove(int x, int y)
+    {
+        if (board[x][y].getBackground() == Color.BLACK)
+        {
+            board[x][y].setIcon(loadIcon("assets/InvalidBlack.png", cellsSize, cellsSize));
+            board[x][y].setBorder(new LineBorder(Color.BLACK));
+        }
+        
+        Timer timer = new Timer(1000, (ActionEvent ae) -> 
+        {
+            if (board[x][y].getBackground() == Color.BLACK)
+            {
+                board[x][y].setIcon(loadIcon("assets/Black.png", cellsSize, cellsSize));
+                board[x][y].setBorder(new EmptyBorder(0, 0, 0, 0));
+            }
+        });
+        timer.setRepeats(false);
+        timer.start();
+
     }
 }

@@ -42,11 +42,14 @@ public class CheckersController implements Controller
         pieceSelectedX = x;
         pieceSelectedY = y;
         isPieceSelected = true;
+                
+        view.selectCell(x, y);
     }
    
     private void deselectPiece()
     {
         isPieceSelected = false;
+        view.deselectAllCells();
     }
     
     private MoveType validateMove(int x, int y, int finalX, int finalY)
@@ -162,6 +165,7 @@ public class CheckersController implements Controller
 
                 case INVALID:
                     deselectPiece();
+                    view.invalidMove(x, y);
                     break;
             }
             view.update();
