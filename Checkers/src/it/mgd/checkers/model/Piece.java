@@ -4,9 +4,8 @@
 **************************/
 package it.mgd.checkers.model;
 
+import it.mgd.checkers.Utils.Utils;
 import static java.awt.Component.CENTER_ALIGNMENT;
-import java.awt.Image;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 public class Piece {
@@ -20,7 +19,6 @@ public class Piece {
         label = new JLabel();
         label.setAlignmentX(CENTER_ALIGNMENT);
         label.setAlignmentY(CENTER_ALIGNMENT);
-     
     }
     
     //PUBLIC MEMBER FUNCTION
@@ -36,10 +34,10 @@ public class Piece {
         isKing = true;
         switch(color){
             case WHITE:
-                setLabel("assets/WhiteDama.png");
+                setLabel(Utils.whiteKing, Utils.pieceSize, Utils.pieceSize);
                 break;
             case BLACK:
-                setLabel("assets/BlackDama.png");
+                setLabel(Utils.blackKing, Utils.pieceSize, Utils.pieceSize);
                 break;
         }
     }
@@ -68,26 +66,21 @@ public class Piece {
         this.color = color;
         switch(color){
             case WHITE:
-                setLabel("assets/WhitePawn.png");
+                setLabel(Utils.whiteMan, Utils.pieceSize, Utils.pieceSize);
                 break;
             case BLACK:
-                setLabel("assets/BlackPawn.png");
+                setLabel(Utils.blackMan, Utils.pieceSize, Utils.pieceSize);
                 break;
         }
-     }
+    }
           
     public JLabel getLabel(){
         return label;
     }
     
     //PRIVATE MEMBER FUNCTION
-    private void setLabel(String filename){
-        ImageIcon icon = new ImageIcon(filename);
-        Image imgIcon = icon.getImage();
-        imgIcon = imgIcon.getScaledInstance(32, 32, Image.SCALE_SMOOTH);
-        icon = new ImageIcon(imgIcon);
-        label.setIcon(icon);
-       
+    private void setLabel(String filename, int sizeX, int sizeY){
+        label.setIcon(Utils.loadIcon(filename, sizeX, sizeY));
     }
     
     //PUBLIC MEMBER

@@ -4,13 +4,13 @@
 **************************/
 package it.mgd.checkers.View;
 
+import it.mgd.checkers.Utils.Utils;
 import it.mgd.checkers.controller.Controller;
 import it.mgd.checkers.model.Model;
 import it.mgd.checkers.model.Piece;
 
 import java.awt.Color;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -30,7 +30,7 @@ public class CheckersPanel extends JPanel implements View{
         this.frame = frame;
         this.model = model;
 
-        board = new JButton[cellsNumber][cellsNumber];
+        board = new JButton[Utils.numberOfCells][Utils.numberOfCells];
         initBoard();
     }
 
@@ -47,8 +47,8 @@ public class CheckersPanel extends JPanel implements View{
     
     @Override
     public void update(){
-        for (int y = 0; y < cellsNumber; ++y){
-            for (int x = 0; x < cellsNumber; ++x){
+        for (int y = 0; y < Utils.numberOfCells; ++y){
+            for (int x = 0; x < Utils.numberOfCells; ++x){
                 removePieceAt(x, y);
                 setPieceAt(x, y, model.pieceAt(x, y));
                 board[x][y].repaint();
@@ -58,37 +58,37 @@ public class CheckersPanel extends JPanel implements View{
     
     @Override
     public void selectCell(int x, int y){
-        board[x][y].setIcon(loadIcon("assets/Selected.png", cellsSize, cellsSize));
+        board[x][y].setIcon(Utils.loadIcon(Utils.selectedCell, Utils.cellSize, Utils.cellSize));
         board[x][y].setBorder(new LineBorder(Color.BLACK));
     }
     
     @Override
     public void deselectCell(int x, int y){
         if(board[x][y].getBackground() == Color.BLACK)
-            board[x][y].setIcon(loadIcon("assets/Black.png", cellsSize, cellsSize));
+            board[x][y].setIcon(Utils.loadIcon(Utils.blackCell, Utils.cellSize, Utils.cellSize));
         else
-            board[x][y].setIcon(loadIcon("assets/White.png", cellsSize, cellsSize));
+            board[x][y].setIcon(Utils.loadIcon(Utils.whiteCell,  Utils.cellSize, Utils.cellSize));
 
         board[x][y].setBorder(new EmptyBorder(0, 0, 0, 0));
     }
 
     @Override
     public void deselectAllCells(){
-        for (int y = 0; y < cellsNumber; ++y)
-            for (int x = 0; x < cellsNumber; ++x) 
+        for (int y = 0; y < Utils.numberOfCells; ++y)
+            for (int x = 0; x < Utils.numberOfCells; ++x) 
                 deselectCell(x, y);
     }
 
     @Override
     public void invalidMove(int x, int y){
         if (board[x][y].getBackground() == Color.BLACK){
-            board[x][y].setIcon(loadIcon("assets/InvalidBlack.png", cellsSize, cellsSize));
+            board[x][y].setIcon(Utils.loadIcon(Utils.invalidCell, Utils.cellSize, Utils.cellSize));
             board[x][y].setBorder(new LineBorder(Color.BLACK));
         }
         
         Timer timer = new Timer(1000, (ActionEvent ae) -> {
             if (board[x][y].getBackground() == Color.BLACK){
-                board[x][y].setIcon(loadIcon("assets/Black.png", cellsSize, cellsSize));
+                board[x][y].setIcon(Utils.loadIcon(Utils.blackCell, Utils.cellSize, Utils.cellSize));
                 board[x][y].setBorder(new EmptyBorder(0, 0, 0, 0));
             }
         });
@@ -98,19 +98,19 @@ public class CheckersPanel extends JPanel implements View{
 
     //PRIVATE MEMBER FUNCTION
     private void initBoard(){       
-        setLayout(new GridLayout(cellsNumber, cellsNumber));
+        setLayout(new GridLayout(Utils.numberOfCells, Utils.numberOfCells));
         setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, Color.BLACK));
         
-        for (int y = 0; y < cellsNumber; ++y){
-            for (int x = 0; x < cellsNumber; ++x){
+        for (int y = 0; y < Utils.numberOfCells; ++y){
+            for (int x = 0; x < Utils.numberOfCells; ++x){
                 board[x][y] = new JButton();
                 ImageIcon cellIcon;
                 if ((x % 2 == 1 && y % 2 == 1) || (x % 2 == 0 && y % 2 == 0)){
                     board[x][y].setBackground(Color.WHITE);
-                    cellIcon = loadIcon("assets/White.png", cellsSize, cellsSize);
+                    cellIcon = Utils.loadIcon(Utils.whiteCell, Utils.cellSize, Utils.cellSize);
                 }else{
                     board[x][y].setBackground(Color.BLACK);
-                    cellIcon = loadIcon("assets/Black.png", cellsSize, cellsSize);
+                    cellIcon = Utils.loadIcon(Utils.blackCell, Utils.cellSize, Utils.cellSize);
                 }
 
                 board[x][y].setIcon(cellIcon);
@@ -122,8 +122,7 @@ public class CheckersPanel extends JPanel implements View{
     }
     
     private void addListener(int x,int y){
-        
-        board[x][y].addMouseListener(new MouseAdapter(){
+            board[x][y].addMouseListener(new MouseAdapter(){
                 @Override
                 public void mousePressed(MouseEvent evt){
                     controller.onClick(x, y);
@@ -133,9 +132,8 @@ public class CheckersPanel extends JPanel implements View{
     
     private void setPieceAt(int x, int y, Piece value) 
     {
-        if (value != null){
+        if (value != null)
             board[x][y].add(value.getLabel());
-        }
     }
     
     private void removePieceAt(int x, int y){
@@ -144,20 +142,10 @@ public class CheckersPanel extends JPanel implements View{
         }
     }
     
-    private ImageIcon loadIcon(String filename, int sizeX, int sizeY){
-        ImageIcon icon = new ImageIcon(filename);
-        Image imgIcon = icon.getImage();
-        imgIcon = imgIcon.getScaledInstance(sizeX, sizeY, Image.SCALE_SMOOTH);
-        return new ImageIcon(imgIcon);
-    }
-    
-    
     //MEMBER
     private final JFrame frame;
     private final Model model;
     private Controller controller;
     
-    private final int cellsNumber = 8;
-    private final int cellsSize = 64;
     private final JButton[][] board;
 }

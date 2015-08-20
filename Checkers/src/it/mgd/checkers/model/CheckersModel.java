@@ -4,48 +4,48 @@
 **************************/
 package it.mgd.checkers.model;
 
+import it.mgd.checkers.Utils.Utils;
 import it.mgd.checkers.model.Piece.PieceColor;
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class CheckersModel implements Model{
     
     //CONSTRUCTOR
     public CheckersModel(){
-        board = new Tile[cellsNumber][cellsNumber];
-        for(int row = 0; row < cellsNumber; ++row)
-            for(int column = 0; column < cellsNumber; ++column)
+        board = new Tile[Utils.numberOfCells][Utils.numberOfCells];
+        for(int row = 0; row < Utils.numberOfCells; ++row)
+            for(int column = 0; column < Utils.numberOfCells; ++column)
                 board[row][column] = new Tile();
 
         pieces = new ArrayList();
-        for(int index = 0; index < cellsNumber * 3; ++index)
+        for(int index = 0; index < Utils.numberOfCells * Utils.numberOfLines; ++index)
             pieces.add(new Piece());
     }
       
     //PUBLIC MEMBER FUNCTION
-   @Override
+    @Override
     public void start(){
         
-        for(int column = 0; column < cellsNumber; ++column)
-            for(int row = 0; row < cellsNumber; ++row)
+        for(int column = 0; column < Utils.numberOfCells; ++column)
+            for(int row = 0; row < Utils.numberOfCells; ++row)
                 board[row][column].free();
         
         Piece tmp;
         int k = 0;
-        for(int i = 0; i < 3; ++i){
-            for(int j = i % 2; j < cellsNumber; j += 2, ++k){
+        for(int i = 0; i < Utils.numberOfLines; ++i){
+            for(int j = i % 2; j < Utils.numberOfCells; j += 2, ++k){
                 tmp = pieces.get(k);
                 tmp.setColor(PieceColor.BLACK);
-                tmp.setX(cellsNumber-1-i);
+                tmp.setX(Utils.numberOfCells - 1 - i);
                 tmp.setY(j);
-                board[j][cellsNumber-1-i].occupy(tmp);
+                board[j][Utils.numberOfCells - 1 - i].occupy(tmp);
                 pieces.add(tmp);
             }
         }
         
-        for(int i = 0; i < 3; ++i){
-            for(int j = (i+1) % 2; j < cellsNumber; j += 2, ++k){
+        for(int i = 0; i < Utils.numberOfLines; ++i){
+            for(int j = (i+1) % 2; j < Utils.numberOfCells; j += 2, ++k){
                 tmp = pieces.get(k);
                 tmp.setColor(PieceColor.WHITE);
                 tmp.setX(i);
@@ -117,5 +117,4 @@ public class CheckersModel implements Model{
     //MEMBER
     final private List<Piece> pieces;
     final private Tile[][] board;
-    private final int cellsNumber = 8;
 }
