@@ -40,7 +40,6 @@ public class CheckersPanel extends JPanel implements View
         this.model = model;
 
         board = new JButton[cellsNumber][cellsNumber];
-
         initBoard();
     }
         
@@ -61,54 +60,39 @@ public class CheckersPanel extends JPanel implements View
                 
                 board[x][y] = new JButton(cellIcon);
                 board[x][y].setBorder(new EmptyBorder(0, 0, 0, 0));
-                
+                addListener(x,y);
                 add(board[x][y]);
+                
+
             }
     }
-    
-    private void setPieceAt(int x, int y, Piece value) 
-    {
-        ImageIcon cellIcon = null;
-        if (value != null)
-            switch(value.getColor())
-            {
-
-                case WHITE:
-                    cellIcon = loadIcon("assets/WhitePawn.png", cellsSize / 2, cellsSize / 2);
-                    break;
-                case BLACK:
-                    cellIcon = loadIcon("assets/BlackPawn.png", cellsSize / 2, cellsSize / 2);
-
-                    break;
-            }
-                
-        if(cellIcon != null)
-        {
-            JLabel pieceLabel = new JLabel(cellIcon);
-            pieceLabel.setAlignmentX(CENTER_ALIGNMENT);
-            pieceLabel.setAlignmentY(CENTER_ALIGNMENT);
-
-            board[x][y].add(pieceLabel);
-        }
+    private void addListener(int x,int y){
         
-        board[x][y].addMouseListener(new MouseAdapter()
-                {
-                    @Override
-                    public void mousePressed(MouseEvent evt)
-                    {
+        board[x][y].addMouseListener(new MouseAdapter(){
+                @Override
+                    public void mousePressed(MouseEvent evt){
                         controller.onClick(x, y);
                     }
                 });
     }
+    private void setPieceAt(int x, int y, Piece value) 
+    {
+        if (value != null){
+            board[x][y].add(value.getLabel());
+        }
+    }
     
     private void removePieceAt(int x, int y)
     {
+ 
         Component[] component = board[x][y].getComponents();
         if(!model.isOccupied(x, y) && component.length > 0)
         {
-            for(int index = 0; index < component.length; ++index)
-                if(component[index].getClass().getName().contains("JLabel"))
-                    board[x][y].remove(index);
+           System.out.println(component.length);
+     //      for(int index = component.length-1; index >= 0; --index)
+      //     {
+                board[x][y].remove(0);
+      //     }
         }
     }
     
@@ -122,27 +106,23 @@ public class CheckersPanel extends JPanel implements View
     }
     
     @Override
-    public Model getModel() 
-    {
+    public Model getModel(){
         return model;
     }
 	
     @Override
-    public void setController(Controller controller) 
-    {
+    public void setController(Controller controller){
         this.controller = controller;
+       
     }
     
     @Override
-    public void update()
-    {
+    public void update(){
         for (int y = 0; y < cellsNumber; ++y)
-            for (int x = 0; x < cellsNumber; ++x) 
-            {
-                setPieceAt(x, y, model.pieceAt(x, y));
+            for (int x = 0; x < cellsNumber; ++x){
                 removePieceAt(x, y);
+                setPieceAt(x, y, model.pieceAt(x, y));
+                board[x][y].repaint();
             }
-
-        revalidate();
-    }
+   }
 }

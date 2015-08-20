@@ -7,7 +7,7 @@ package it.mgd.checkers.model;
 import it.mgd.checkers.model.Piece.PieceColor;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
+
 
 public class CheckersModel implements Model
 {
@@ -16,12 +16,14 @@ public class CheckersModel implements Model
         //MEMBER
         private boolean isOccupied;
         private Piece piece;
+      
         
         //CONSTRUCTOR
         public Tile()
         {
             isOccupied = false;
             piece = null;
+
         }
         
         //MEMBER FUNCTION
@@ -57,24 +59,23 @@ public class CheckersModel implements Model
     public CheckersModel()
     {
         board = new Tile[cellsNumber][cellsNumber];
-        for(int column = 0; column < cellsNumber; ++column)
-            for(int row = 0; row < cellsNumber; ++row)
+        for(int row = 0; row < cellsNumber; ++row)
+            for(int column = 0; column < cellsNumber; ++column)
                 board[row][column] = new Tile();
-        
+
         pieces = new ArrayList();
         for(int index = 0; index < cellsNumber * 3; ++index)
             pieces.add(new Piece());
     }
       
     //MEMBER FUNCTION
-    public ListIterator<Piece> GetPieces()
-    {
-        return pieces.listIterator();
-    }
-       
-    @Override
+   @Override
     public void start()
     {
+        for(int column = 0; column < cellsNumber; ++column)
+            for(int row = 0; row < cellsNumber; ++row)
+                board[row][column].free();
+        
         Piece tmp;
         int k = 0;
         for(int i = 0; i < 3; ++i)
@@ -108,16 +109,16 @@ public class CheckersModel implements Model
     public void movePiece(int x, int y, int finalX, int finalY)
     {
         Piece tmp = board[x][y].getPiece();
+        board[x][y].free();
         tmp.setX(finalX);
         tmp.setY(finalY);
         board[finalX][finalY].occupy(tmp);
-        board[x][y].free();
+
     }
     
     @Override
     public void capture(int x, int y)
     {
-        board[x][y].getPiece();
         board[x][y].free();
     }
     

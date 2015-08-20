@@ -9,7 +9,9 @@ import it.mgd.checkers.model.Piece;
 import static it.mgd.checkers.model.Piece.PieceColor.BLACK;
 import static it.mgd.checkers.model.Piece.PieceColor.WHITE;
 import it.mgd.checkers.View.View;
+
 import static java.lang.Math.abs;
+
 
 public class CheckersController implements Controller 
 {
@@ -27,10 +29,12 @@ public class CheckersController implements Controller
     private boolean isPieceSelected;
     private int pieceSelectedX;
     private int pieceSelectedY;
+    private boolean isWhiteTurn;
 
     //CONSTRUCTOR
     public CheckersController(View view, Model model)
     {
+        isWhiteTurn = true;
         this.model = model;
         this.view = view;
         view.setController(this);
@@ -55,14 +59,14 @@ public class CheckersController implements Controller
         int diffY, diffX;
         diffY = finalY - y;
         diffX = finalX - x;
-        if(!model.isOccupied(finalX, finalY) || abs(diffY) == abs(diffX))
+        if(!model.isOccupied(finalX, finalY) && abs(diffY) == abs(diffX))
         {
             Piece piece = model.pieceAt(x, y);
 
             switch(diffY)
             {
                 case 1:
-                    if(piece.isKing() || piece.getColor() == WHITE)
+                    if(piece.isKing() || piece.getColor() == WHITE )
                         result = MoveType.MOVE;
                     break;
                 
@@ -72,7 +76,7 @@ public class CheckersController implements Controller
                     break;
 
                 case 2:
-                    if(piece.isKing() || piece.getColor() == WHITE)
+                    if(piece.isKing() || piece.getColor() == WHITE )
                     {
                         Piece captured = model.pieceAt(x + diffX / 2, y + diffY / 2);
                         if(captured != null)
@@ -128,22 +132,25 @@ public class CheckersController implements Controller
     public void onNewGame()
     {
         model.start();
-        view.update();
+  
+        isWhiteTurn = true;
+              view.update();
     }
        
     @Override
     public void onClick(int x, int y)
     {
-       if(model.pieceAt(x, y) != null)
+       if(model.pieceAt(x, y) != null&&CheckTurn(model.pieceAt(x, y).getColor()))
        {
-            if(isPieceSelected)
-            {
-                deselectPiece();
-                if(x != pieceSelectedX || y != pieceSelectedY)
-                    selectPiece(x, y);
-            }
-            else
+          
+            if(!isPieceSelected){
                 selectPiece(x, y);
+            }
+            else{
+                deselectPiece();
+                selectPiece(x, y);
+            }
+           
         }
         else if(isPieceSelected)
         {
@@ -151,6 +158,8 @@ public class CheckersController implements Controller
             {
                 case MOVE:
                     model.movePiece(pieceSelectedX, pieceSelectedY, x, y);
+                    isWhiteTurn=!isWhiteTurn;
+                    PromotionCheck(x,y,model.pieceAt(x,y).getColor());
                     break;
 
                 case CAPTURE:
@@ -158,13 +167,26 @@ public class CheckersController implements Controller
                     pieceSelectedX += (x - pieceSelectedX) / 2;
                     pieceSelectedY += (y - pieceSelectedY) / 2;
                     model.capture(pieceSelectedX, pieceSelectedY);
+                    isWhiteTurn=!isWhiteTurn;
+                    PromotionCheck(x,y,model.pieceAt(x,y).getColor());
                     break;
 
                 case INVALID:
-                    deselectPiece();
                     break;
-            }
+            }            
             view.update();
+            deselectPiece();
         }
+    }
+    
+    private boolean CheckTurn(Piece.PieceColor color){
+        return (isWhiteTurn && color == WHITE) || (!isWhiteTurn && color == BLACK);
+    }
+    private void PromotionCheck(int posX,int posY,Piece.PieceColor color){
+        if((posY==0&&color==BLACK)||(posY==7&&color==WHITE))
+            {
+                model.pieceAt(posX,posY).promote();
+            }   
+
     }
 }
