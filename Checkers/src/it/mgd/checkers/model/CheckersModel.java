@@ -9,55 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class CheckersModel implements Model
-{
-    private class Tile
-    {
-        //MEMBER
-        private boolean isOccupied;
-        private Piece piece;
-      
-        
-        //CONSTRUCTOR
-        public Tile()
-        {
-            isOccupied = false;
-            piece = null;
-
-        }
-        
-        //MEMBER FUNCTION
-        public void occupy(Piece Pawn)
-        {
-            isOccupied = true;
-            piece=Pawn;
-        }
-        
-        public void free()
-        {
-            isOccupied = false;
-            piece = null;
-        }
-        
-        public Piece getPiece()
-        {
-            return piece;
-        }
-        
-        public boolean isOccupied()
-        {
-            return isOccupied;
-        }
-    }
-        
-    //MEMBER
-    final private List<Piece> pieces;
-    final private Tile[][] board;
-    private final int cellsNumber = 8;
+public class CheckersModel implements Model{
     
     //CONSTRUCTOR
-    public CheckersModel()
-    {
+    public CheckersModel(){
         board = new Tile[cellsNumber][cellsNumber];
         for(int row = 0; row < cellsNumber; ++row)
             for(int column = 0; column < cellsNumber; ++column)
@@ -68,20 +23,18 @@ public class CheckersModel implements Model
             pieces.add(new Piece());
     }
       
-    //MEMBER FUNCTION
+    //PUBLIC MEMBER FUNCTION
    @Override
-    public void start()
-    {
+    public void start(){
+        
         for(int column = 0; column < cellsNumber; ++column)
             for(int row = 0; row < cellsNumber; ++row)
                 board[row][column].free();
         
         Piece tmp;
         int k = 0;
-        for(int i = 0; i < 3; ++i)
-        {
-            for(int j = i % 2; j < cellsNumber; j += 2, ++k)
-            {
+        for(int i = 0; i < 3; ++i){
+            for(int j = i % 2; j < cellsNumber; j += 2, ++k){
                 tmp = pieces.get(k);
                 tmp.setColor(PieceColor.BLACK);
                 tmp.setX(cellsNumber-1-i);
@@ -91,10 +44,8 @@ public class CheckersModel implements Model
             }
         }
         
-        for(int i = 0; i < 3; ++i)
-        {
-            for(int j = (i+1) % 2; j < cellsNumber; j += 2, ++k)
-            {
+        for(int i = 0; i < 3; ++i){
+            for(int j = (i+1) % 2; j < cellsNumber; j += 2, ++k){
                 tmp = pieces.get(k);
                 tmp.setColor(PieceColor.WHITE);
                 tmp.setX(i);
@@ -106,8 +57,7 @@ public class CheckersModel implements Model
     }
     
     @Override
-    public void movePiece(int x, int y, int finalX, int finalY)
-    {
+    public void movePiece(int x, int y, int finalX, int finalY){
         Piece tmp = board[x][y].getPiece();
         board[x][y].free();
         tmp.setX(finalX);
@@ -117,20 +67,55 @@ public class CheckersModel implements Model
     }
     
     @Override
-    public void capture(int x, int y)
-    {
+    public void capture(int x, int y){
         board[x][y].free();
     }
     
     @Override
-    public Piece pieceAt(int x, int y)
-    {
+    public Piece pieceAt(int x, int y){
         return board[x][y].getPiece();
     }
     
     @Override
-    public boolean isOccupied(int x, int y)
-    {
+    public boolean isOccupied(int x, int y){
         return board[x][y].isOccupied();
-    }    
+    }
+    
+    //INNER CLASS
+    private class Tile{
+        //CONSTRUCTOR
+        public Tile(){
+            isOccupied = false;
+            piece = null;
+
+        }
+        
+        //PUBLIC MEMBER FUNCTION
+        public void occupy(Piece Pawn){
+            isOccupied = true;
+            piece=Pawn;
+        }
+        
+        public void free(){
+            isOccupied = false;
+            piece = null;
+        }
+        
+        public Piece getPiece(){
+            return piece;
+        }
+        
+        public boolean isOccupied(){
+            return isOccupied;
+        }
+        
+        //MEMBER
+        private boolean isOccupied;
+        private Piece piece;
+    }
+        
+    //MEMBER
+    final private List<Piece> pieces;
+    final private Tile[][] board;
+    private final int cellsNumber = 8;
 }

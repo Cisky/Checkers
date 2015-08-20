@@ -10,18 +10,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 public class Piece {
-    //ENUM
-    public enum PieceColor{
-        BLACK,
-        WHITE
-    }
-    
-    //MEMBER
-    private PieceColor color;
-    private boolean isKing;
-    private int posX;
-    private int posY;
-    private JLabel label;
+
     //CONSTRUCTOR
     public Piece(){
         color = null;
@@ -34,7 +23,7 @@ public class Piece {
      
     }
     
-    //MEMBER FUNCTION
+    //PUBLIC MEMBER FUNCTION
     public boolean isKing(){
         return isKing;
     }
@@ -79,12 +68,12 @@ public class Piece {
     public void setColor(PieceColor color){
         this.color = color;
         switch(color){
-                case WHITE:
-                    setLabel("assets/WhitePawn.png");
-                    break;
-                case BLACK:
-                    setLabel("assets/BlackPawn.png");
-                    break;
+            case WHITE:
+                setLabel("assets/WhitePawn.png");
+                break;
+            case BLACK:
+                setLabel("assets/BlackPawn.png");
+                break;
         }
      }
           
@@ -92,6 +81,7 @@ public class Piece {
         return label;
     }
     
+    //PRIVATE MEMBER FUNCTION
     private void setLabel(String filename){
         ImageIcon icon = new ImageIcon(filename);
         Image imgIcon = icon.getImage();
@@ -100,4 +90,17 @@ public class Piece {
         label.setIcon(icon);
        
     }
+    
+    //PUBLIC MEMBER
+    public enum PieceColor{
+        BLACK,
+        WHITE
+    }
+    
+    //MEMBER
+    private PieceColor color;
+    private boolean isKing;
+    private int posX;
+    private int posY;
+    private final JLabel label;
 }

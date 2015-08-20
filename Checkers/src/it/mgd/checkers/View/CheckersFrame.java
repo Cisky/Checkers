@@ -14,6 +14,10 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -22,29 +26,25 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
-public class CheckersFrame extends JFrame 
-{
-    //MEMBER
-    private final CheckersModel model;
-    private final Controller controller;
+public class CheckersFrame extends JFrame{
 
     //CONSTRUCTOR
-    public CheckersFrame() 
-    {
+    public CheckersFrame(){
         model = new CheckersModel();
         View view = createBoard();
         controller = new CheckersController(view, model);
         controller.onNewGame();
         
+        framePosition = null;
+
         setIconImage(new ImageIcon("assets/WhiteDama.png").getImage());
         setUndecorated(true);
         pack();
         setLocationRelativeTo(null);
     }
 
-    //MEMBER FUNCTION
-    private void addControlButtons() 
-    {
+    //PRIVATE MEMBER FUNCTION
+    private void addControlButtons(){
         JButton newGame = createButton("New Game", new Color(33,33,33), Color.WHITE, new LineBorder(Color.BLACK), new Dimension(110, 34), false);
         newGame.addActionListener(event -> controller.onNewGame());
 
@@ -62,11 +62,25 @@ public class CheckersFrame extends JFrame
         menu.add(newGame, constraintsNewGame);
         menu.add(exitGame, constraintsExitGame);
         
+        menu.addMouseListener(new MouseAdapter(){
+                    @Override
+                    public void mousePressed(MouseEvent evt){
+                        framePosition = evt.getPoint();
+                    }
+                });
+        
+        menu.addMouseMotionListener(new MouseMotionAdapter(){
+                @Override
+                public void mouseDragged(MouseEvent evt){
+                    Point currCoords = evt.getLocationOnScreen();
+                    setLocation(currCoords.x - framePosition.x, currCoords.y - framePosition.y);
+                }
+            });
+        
         add(menu, BorderLayout.PAGE_START);
     }
     
-    private JButton createButton(String name, Color foreground, Color background, Border border, Dimension size, boolean isFocusPainted)
-    {
+    private JButton createButton(String name, Color foreground, Color background, Border border, Dimension size, boolean isFocusPainted){
         JButton button = new JButton(name);
         button.setForeground(foreground);
         button.setBackground(background);
@@ -77,8 +91,7 @@ public class CheckersFrame extends JFrame
         return button;
     }
     
-    private GridBagConstraints setButtonConstraints(int gridX, int gridY, int weightX, int weightY, int anchor, Insets insest)
-    {
+    private GridBagConstraints setButtonConstraints(int gridX, int gridY, int weightX, int weightY, int anchor, Insets insest){
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = gridX;
         constraints.gridy = gridY;
@@ -93,8 +106,7 @@ public class CheckersFrame extends JFrame
         return constraints;
     }
 
-    private View createBoard()
-    {
+    private View createBoard(){
         addControlButtons();
 
         CheckersPanel panel = new CheckersPanel(model, this);
@@ -102,4 +114,10 @@ public class CheckersFrame extends JFrame
 
         return panel;
     }
+    
+    //MEMBER
+    private final CheckersModel model;
+    private final Controller controller;
+    private Point framePosition;
+    
 }

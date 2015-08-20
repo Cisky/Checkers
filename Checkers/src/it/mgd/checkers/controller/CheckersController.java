@@ -13,135 +13,28 @@ import it.mgd.checkers.View.View;
 import static java.lang.Math.abs;
 
 
-public class CheckersController implements Controller 
-{
-    //ENUM
-    private enum MoveType
-    {
-        INVALID,
-        MOVE,
-        CAPTURE
-    }
-    
-    //MEMBER
-    private final Model model;
-    private final View view;
-    private boolean isPieceSelected;
-    private int pieceSelectedX;
-    private int pieceSelectedY;
-    private boolean isWhiteTurn;
+public class CheckersController implements Controller {
+
 
     //CONSTRUCTOR
-    public CheckersController(View view, Model model)
-    {
+    public CheckersController(View view, Model model){
         isWhiteTurn = true;
         this.model = model;
         this.view = view;
         view.setController(this);
     }
     
-    //MEMBER FUNCTION
-    private void selectPiece(int x, int y)
-   {
-        pieceSelectedX = x;
-        pieceSelectedY = y;
-        isPieceSelected = true;
-    }
-   
-    private void deselectPiece()
-    {
-        isPieceSelected = false;
-    }
-    
-    private MoveType validateMove(int x, int y, int finalX, int finalY)
-    {
-        MoveType result = MoveType.INVALID;
-        int diffY, diffX;
-        diffY = finalY - y;
-        diffX = finalX - x;
-        if(!model.isOccupied(finalX, finalY) && abs(diffY) == abs(diffX))
-        {
-            Piece piece = model.pieceAt(x, y);
-
-            switch(diffY)
-            {
-                case 1:
-                    if(piece.isKing() || piece.getColor() == WHITE )
-                        result = MoveType.MOVE;
-                    break;
-                
-                case -1:
-                    if(piece.isKing() || piece.getColor() == BLACK)
-                       result = MoveType.MOVE;
-                    break;
-
-                case 2:
-                    if(piece.isKing() || piece.getColor() == WHITE )
-                    {
-                        Piece captured = model.pieceAt(x + diffX / 2, y + diffY / 2);
-                        if(captured != null)
-                        {
-                            if(!captured.getColor().equals(piece.getColor()) && (piece.isKing() || captured.isMan()))
-                                result = MoveType.CAPTURE;
-                        }
-                        else
-                        {
-                            if(piece.isKing())
-                                result = MoveType.MOVE;
-                        }
-                    }
-                    break;
-
-                case -2:
-                    if(piece.isKing() || piece.getColor() == BLACK)
-                    {
-                        Piece captured = model.pieceAt(x + diffX / 2, y + diffY / 2);
-                        if(captured != null)
-                        {
-                            if(!captured.getColor().equals(piece.getColor()) && (piece.isKing() || captured.isMan()))
-                                result = MoveType.CAPTURE;
-                        }
-                        else
-                        {
-                            if(piece.isKing())
-                                result = MoveType.MOVE;
-                        }
-                    }
-                    break;
-
-                default:
-                    if(piece.isKing())
-                    {
-                        int incrementX = Integer.signum(diffX);
-                        int incrementY = Integer.signum(diffY);
-                        boolean Valid = true;
-                        
-                        for(int i = x, j = y; i != finalX && Valid; i += incrementX, j += incrementY)
-                            Valid = !model.isOccupied(i, j);
-                        
-                        if(Valid)
-                            result = MoveType.MOVE;
-                    }
-                    break;
-            }
-        }
-        return result;
-    } 
-    
+    //PUBLIC MEMBER FUNCTION
     @Override
-    public void onNewGame()
-    {
+    public void onNewGame(){
         model.start();
-  
         isWhiteTurn = true;
-              view.update();
+        view.update();
     }
        
     @Override
-    public void onClick(int x, int y)
-    {
-       if(model.pieceAt(x, y) != null&&CheckTurn(model.pieceAt(x, y).getColor()))
-       {
+    public void onClick(int x, int y){
+       if(model.pieceAt(x, y) != null&&CheckTurn(model.pieceAt(x, y).getColor())){
           
             if(!isPieceSelected){
                 selectPiece(x, y);
@@ -151,11 +44,8 @@ public class CheckersController implements Controller
                 selectPiece(x, y);
             }
            
-        }
-        else if(isPieceSelected)
-        {
-            switch(validateMove(pieceSelectedX, pieceSelectedY, x, y))
-            {
+        }else if(isPieceSelected){
+            switch(validateMove(pieceSelectedX, pieceSelectedY, x, y)){
                 case MOVE:
                     model.movePiece(pieceSelectedX, pieceSelectedY, x, y);
                     isWhiteTurn=!isWhiteTurn;
@@ -172,21 +62,115 @@ public class CheckersController implements Controller
                     break;
 
                 case INVALID:
+                    view.invalidMove(x, y);
                     break;
-            }            
-            view.update();
+            }      
             deselectPiece();
+            view.update();
         }
     }
+        
+    //PRIVATE MEMBER FUNCTION
+    private void selectPiece(int x, int y){
+        pieceSelectedX = x;
+        pieceSelectedY = y;
+        isPieceSelected = true;
+        view.selectCell(x, y);
+    }
+   
+    private void deselectPiece(){
+        isPieceSelected = false;
+        view.deselectAllCells();
+    }
+    
+    private MoveType validateMove(int x, int y, int finalX, int finalY){
+        MoveType result = MoveType.INVALID;
+        int diffY, diffX;
+        diffY = finalY - y;
+        diffX = finalX - x;
+        if(!model.isOccupied(finalX, finalY) && abs(diffY) == abs(diffX)){
+            Piece piece = model.pieceAt(x, y);
+
+            switch(diffY){
+                case 1:
+                    if(piece.isKing() || piece.getColor() == WHITE )
+                        result = MoveType.MOVE;
+                    break;
+                
+                case -1:
+                    if(piece.isKing() || piece.getColor() == BLACK)
+                       result = MoveType.MOVE;
+                    break;
+
+                case 2:
+                    if(piece.isKing() || piece.getColor() == WHITE ){
+                        Piece captured = model.pieceAt(x + diffX / 2, y + diffY / 2);
+                        if(captured != null){
+                            if(!captured.getColor().equals(piece.getColor()) && (piece.isKing() || captured.isMan()))
+                                result = MoveType.CAPTURE;
+                        }else{
+                            if(piece.isKing())
+                                result = MoveType.MOVE;
+                        }
+                    }
+                    break;
+
+                case -2:
+                    if(piece.isKing() || piece.getColor() == BLACK){
+                        Piece captured = model.pieceAt(x + diffX / 2, y + diffY / 2);
+                        if(captured != null){
+                            if(!captured.getColor().equals(piece.getColor()) && (piece.isKing() || captured.isMan()))
+                                result = MoveType.CAPTURE;
+                        }else{
+                            if(piece.isKing())
+                                result = MoveType.MOVE;
+                        }
+                    }
+                    break;
+
+                default:
+                    if(piece.isKing()){
+                        int incrementX = Integer.signum(diffX);
+                        int incrementY = Integer.signum(diffY);
+                        boolean Valid = true;
+                        
+                        for(int i = x, j = y; i != finalX && Valid; i += incrementX, j += incrementY)
+                            Valid = !model.isOccupied(i, j);
+                        
+                        if(Valid)
+                            result = MoveType.MOVE;
+                    }
+                    break;
+            }
+        }
+        return result;
+    } 
+    
     
     private boolean CheckTurn(Piece.PieceColor color){
         return (isWhiteTurn && color == WHITE) || (!isWhiteTurn && color == BLACK);
     }
+    
     private void PromotionCheck(int posX,int posY,Piece.PieceColor color){
-        if((posY==0&&color==BLACK)||(posY==7&&color==WHITE))
-            {
+        if((posY==0&&color==BLACK)||(posY==7&&color==WHITE)){
                 model.pieceAt(posX,posY).promote();
-            }   
-
+        }   
     }
+   
+    //MEMBER
+    private final Model model;
+    private final View view;
+    private boolean isPieceSelected;
+    private int pieceSelectedX;
+    private int pieceSelectedY;
+    private boolean isWhiteTurn;
+    
+    private enum MoveType
+    {
+        INVALID,
+        MOVE,
+        CAPTURE
+    }
+    
+    
 }
