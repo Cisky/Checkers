@@ -1,10 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.mgd.checkers.controller;
 
+import it.mgd.checkers.controller.CheckersController;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +35,7 @@ public class CheckersControllerTest{
     public void testValidateMove() throws Exception {
         System.out.println("Validate Move Test");
         //Get First of the last row white pawn and move it to valid position
-        assertEquals(CheckersController.GetInvalid(),controller.ValidateMoveTest(2,3,1,2));
+        assertEquals(CheckersController.GetInvalid(), controller.ValidateMoveTest(2,3,1,2));
     }
     
     /**

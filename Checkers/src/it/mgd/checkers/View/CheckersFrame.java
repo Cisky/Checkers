@@ -29,6 +29,7 @@ import javax.swing.border.LineBorder;
 public class CheckersFrame extends JFrame{
 
     //CONSTRUCTOR
+    /** Create a window with control buttons and the checkerboard initialized */
     public CheckersFrame(){
         model = new CheckersModel();
         View view = createBoard();
@@ -44,6 +45,8 @@ public class CheckersFrame extends JFrame{
     }
 
     //PRIVATE MEMBER FUNCTION
+    /** Add at window button new game and button X which allows to close it.
+     *  Handles the mouse input for these components */
     private void addControlButtons(){
         JButton newGame = createButton("New Game", new Color(33,33,33), Color.WHITE, new LineBorder(Color.BLACK), new Dimension(110, 34), false);
         newGame.addActionListener(event -> controller.onNewGame());
@@ -52,8 +55,8 @@ public class CheckersFrame extends JFrame{
         exitGame.addActionListener(event -> System.exit(0));
         
         GridBagLayout layout = new GridBagLayout();
-        GridBagConstraints constraintsNewGame = setButtonConstraints(0, 0, 1, 1, GridBagConstraints.WEST, new Insets(5, 10, 5, 0));
-        GridBagConstraints constraintsExitGame = setButtonConstraints(1, 0, 1, 1, GridBagConstraints.EAST, new Insets(0, 0, 0, 8));
+        GridBagConstraints constraintsNewGame = buttonConstraints(0, 0, 1, 1, GridBagConstraints.WEST, new Insets(5, 10, 5, 0));
+        GridBagConstraints constraintsExitGame = buttonConstraints(1, 0, 1, 1, GridBagConstraints.EAST, new Insets(0, 0, 0, 8));
         
         JPanel menu = new JPanel();
         menu.setLayout(layout);
@@ -80,6 +83,7 @@ public class CheckersFrame extends JFrame{
         add(menu, BorderLayout.PAGE_START);
     }
     
+    /** Returns a button with name, foreground color, background color, border and size specified in the parameters list */
     private JButton createButton(String name, Color foreground, Color background, Border border, Dimension size, boolean isFocusPainted){
         JButton button = new JButton(name);
         button.setForeground(foreground);
@@ -91,7 +95,8 @@ public class CheckersFrame extends JFrame{
         return button;
     }
     
-    private GridBagConstraints setButtonConstraints(int gridX, int gridY, int weightX, int weightY, int anchor, Insets insest){
+    /** Returns a GridBagConstraints for a component */
+    private GridBagConstraints buttonConstraints(int gridX, int gridY, int weightX, int weightY, int anchor, Insets insest){
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = gridX;
         constraints.gridy = gridY;
@@ -106,17 +111,18 @@ public class CheckersFrame extends JFrame{
         return constraints;
     }
 
+    /** Returns a chekerboard and add it at window*/
     private View createBoard(){
         addControlButtons();
 
-        CheckersPanel panel = new CheckersPanel(model, this);
+        CheckersPanel panel = new CheckersPanel(model);
         add(panel, BorderLayout.CENTER);
 
         return panel;
     }
     
     //MEMBER
-    private final CheckersModel model;
-    private final Controller controller;
-    private Point framePosition;    
+    private final CheckersModel model;      /** Model of checker game */
+    private final Controller controller;    /** Controller of checker game */
+    private Point framePosition;            /** Position frame on screen */
 }

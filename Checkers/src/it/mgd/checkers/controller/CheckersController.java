@@ -14,10 +14,10 @@ import it.mgd.checkers.model.Piece.PieceColor;
 
 import static java.lang.Math.abs;
 
-
 public class CheckersController implements Controller {
 
     //CONSTRUCTOR
+    /** Create a controller with view and model specified in the parameters list */
     public CheckersController(View view, Model model){
         isWhiteTurn = true;
         this.model = model;
@@ -26,6 +26,7 @@ public class CheckersController implements Controller {
     }
     
     //PUBLIC MEMBER FUNCTION
+    /** Start a new game */
     @Override
     public void onNewGame(){
         model.start();
@@ -33,10 +34,10 @@ public class CheckersController implements Controller {
         view.update();
     }
        
+    /** Manages the actions to take when a tile is selected */
     @Override
     public void onClick(int x, int y){
-       if(model.pieceAt(x, y) != null&&checkTurn(model.pieceAt(x, y).getColor())){
-          
+        if(model.pieceAt(x, y) != null && checkTurn(model.pieceAt(x, y).getColor())){
             if(!isPieceSelected){
                 selectPiece(x, y);
             }
@@ -44,7 +45,6 @@ public class CheckersController implements Controller {
                 deselectPiece();
                 selectPiece(x, y);
             }
-           
         }else if(isPieceSelected){
             deselectPiece();
             
@@ -69,11 +69,12 @@ public class CheckersController implements Controller {
                     break;
             }      
             view.update();
+        }else if(!checkTurn(model.pieceAt(x, y).getColor())){
+            view.invalidMove(x, y);
         }
     }
     
     //PROTECTED MEMBER FUNCTION
-    
     //NEEDED FOR TEST
     protected static MoveType GetMove(){
         return MoveType.MOVE;
@@ -94,18 +95,23 @@ public class CheckersController implements Controller {
     }
     
     //PRIVATE MEMBER FUNCTION
+    /** Sets the piece in position (x, y) as selected and colors the selected tile on the checkerboard */
     private void selectPiece(int x, int y){
         pieceSelectedX = x;
         pieceSelectedY = y;
         isPieceSelected = true;
-        view.selectCell(x, y);
-    }
-   
-    private void deselectPiece(){
-        isPieceSelected = false;
-        view.deselectAllCells();
+        view.selectTile(x, y);
     }
     
+    /** Sets the pieces on the checkerboard as deselected and returns the tile to the original color */
+    private void deselectPiece(){
+        isPieceSelected = false;
+        view.deselectAllTiles();
+    }
+    
+    /** Returns: INVALID if the move is wrong, 
+     *           MOVE if the move is legal and there aren't pieces of other color on  its path 
+     *           CAPTURE if the move is legal and there are a pieces of other color on its path */
     private MoveType validateMove(int x, int y, int finalX, int finalY){
         MoveType result = MoveType.INVALID;
         int diffY, diffX;
@@ -169,24 +175,26 @@ public class CheckersController implements Controller {
         return result;
     } 
     
+    /** Returns true if it is the turn of the piece with color 'color', false otherwise */
     private boolean checkTurn(PieceColor color){
         return (isWhiteTurn && color == WHITE) || (!isWhiteTurn && color == BLACK);
     }
     
+    /** Check if the piec with color 'color' at position (x, y) on the checkerboard can be promoted */
     private void promotionCheck(int posX, int posY, PieceColor color){
-        if((posY == 0 && color == BLACK)||(posY == Utils.numberOfCells - 1 && color == WHITE)){
+        if((posY == 0 && color == BLACK) || (posY == Utils.numberOfTiles - 1 && color == WHITE))
             model.pieceAt(posX,posY).promote();
-        }   
     }
    
     //MEMBER
-    private final Model model;
-    private final View view;
-    private boolean isPieceSelected;
-    private int pieceSelectedX;
-    private int pieceSelectedY;
-    private boolean isWhiteTurn;
+    private final Model model;      /** Model of checker game */
+    private final View view;        /** View of checker game */
+    private boolean isPieceSelected;/** The piece on tile is selected or unselected */
+    private int pieceSelectedX;     /** Position X of the piece selected on checkerboard */
+    private int pieceSelectedY;     /** Position Y of the piece selected on checkerboard */
+    private boolean isWhiteTurn;    /** Is turn of the white piece or of the black piece */
     
+    /** Type of move made */
     private enum MoveType{
         INVALID,
         MOVE,

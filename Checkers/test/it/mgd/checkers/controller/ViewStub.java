@@ -1,9 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.mgd.checkers.controller;
+
 import it.mgd.checkers.View.View;
 import it.mgd.checkers.model.Model;
 /**
@@ -26,7 +22,7 @@ public class ViewStub implements View{
     }
 
     @Override
-    public void selectCell(int x, int y) {
+    public void selectTile(int x, int y) {
     }
 
     @Override
@@ -34,11 +30,11 @@ public class ViewStub implements View{
     }
 
     @Override
-    public void deselectCell(int x, int y) {
+    public void deselectTile(int x, int y) {
     }
 
     @Override
-    public void deselectAllCells() {
+    public void deselectAllTiles() {
     }
     
 }
