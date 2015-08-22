@@ -60,8 +60,8 @@ public class CheckersController implements Controller {
                     pieceSelectedX += (x - pieceSelectedX) / 2;
                     pieceSelectedY += (y - pieceSelectedY) / 2;
                     model.capture(pieceSelectedX, pieceSelectedY);
-                    isWhiteTurn=!isWhiteTurn;
-                    promotionCheck(x,y,model.pieceAt(x,y).getColor());
+                    isWhiteTurn =! isWhiteTurn;
+                    promotionCheck(x, y, model.pieceAt(x,y).getColor());
                     break;
 
                 case INVALID:
@@ -69,7 +69,8 @@ public class CheckersController implements Controller {
                     break;
             }      
             view.update();
-        }else if(!checkTurn(model.pieceAt(x, y).getColor())){
+        }else if(model.pieceAt(x, y) != null && !checkTurn(model.pieceAt(x, y).getColor())){
+            deselectPiece();
             view.invalidMove(x, y);
         }
     }
