@@ -1,5 +1,6 @@
-Checkers
+# Checkers
 Fundamentals of Software Engineering Project
+
 University of Verona, Italy - Master in Computer Game Development
 
 In this project we have implemented the rules of Italian checkers. 
@@ -15,4 +16,5 @@ In this project we have implemented the rules of Italian checkers.
 Anyway, in file Utils.java it's also possible to change the size of board and the number of pieces on it.
 
 Francesco Battipaglia
+
 Giuliano Focchiatti
