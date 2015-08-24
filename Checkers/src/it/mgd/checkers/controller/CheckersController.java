@@ -60,8 +60,9 @@ public class CheckersController implements Controller {
                     pieceSelectedX += (x - pieceSelectedX) / 2;
                     pieceSelectedY += (y - pieceSelectedY) / 2;
                     model.capture(pieceSelectedX, pieceSelectedY);
-                    isWhiteTurn=!isWhiteTurn;
-                    promotionCheck(x,y,model.pieceAt(x,y).getColor());
+                    isWhiteTurn = !isWhiteTurn;
+                    promotionCheck(x, y, model.pieceAt(x,y).getColor());
+                    doubleCaptureCheck(x, y, model.pieceAt(x,y));
                     break;
 
                 case INVALID:
@@ -69,7 +70,8 @@ public class CheckersController implements Controller {
                     break;
             }      
             view.update();
-        }else if(model.pieceAt(x, y) != null&&!checkTurn(model.pieceAt(x, y).getColor())){
+        }else if(model.pieceAt(x, y) != null && !checkTurn(model.pieceAt(x, y).getColor())){
+            deselectPiece();
             view.invalidMove(x, y);
         }
     }
@@ -179,10 +181,65 @@ public class CheckersController implements Controller {
         return (isWhiteTurn && color == WHITE) || (!isWhiteTurn && color == BLACK);
     }
     
-    /** Check if the piec with color 'color' at position (x, y) on the checkerboard can be promoted */
+    /** Check if the piece with color 'color' at position (x, y) on the checkerboard can be promoted */
     private void promotionCheck(int posX, int posY, PieceColor color){
         if((posY == 0 && color == BLACK) || (posY == Utils.numberOfTiles - 1 && color == WHITE))
             model.pieceAt(posX,posY).promote();
+    }
+    
+    /** Check if the piece at position (x, y) on the checkerboard can capture other pieces */
+    private void doubleCaptureCheck(int x, int y, Piece piece){
+        if(x > 1 && x < Utils.numberOfTiles - 2){
+            if(y == 0 || y == 1){
+                if((model.isOccupied(x - 1, y  + 1) && !model.isOccupied(x - 2, y + 2) && piece.getColor() != model.pieceAt(x - 1, y + 1).getColor()) || 
+                   (model.isOccupied(x + 1, y  + 1) && !model.isOccupied(x + 2, y + 2) && piece.getColor() != model.pieceAt(x + 1, y + 1).getColor())){
+                    selectPiece(x, y);
+                    isWhiteTurn = piece.getColor() == WHITE;
+                }
+            }
+            else if(y == Utils.numberOfTiles - 1 || y == Utils.numberOfTiles - 2){
+                if((model.isOccupied(x - 1, y  - 1) && !model.isOccupied(x - 2, y - 2) && piece.getColor() != model.pieceAt(x - 1, y - 1).getColor()) || 
+                   (model.isOccupied(x + 1, y  - 1) && !model.isOccupied(x + 2, y - 2) && piece.getColor() != model.pieceAt(x + 1, y - 1).getColor())){
+                    selectPiece(x, y);
+                    isWhiteTurn = piece.getColor() == WHITE;
+                }                    
+            }
+        }
+            
+        if(y > 1 && y < Utils.numberOfTiles - 2){
+            if(x == 0 || x == 1){
+                if((model.isOccupied(x + 1, y  - 1) && !model.isOccupied(x + 2, y - 2) && piece.getColor() != model.pieceAt(x + 1, y - 1).getColor()) || 
+                   (model.isOccupied(x + 1, y  + 1) && !model.isOccupied(x + 2, y + 2) && piece.getColor() != model.pieceAt(x + 1, y + 1).getColor())){
+                    selectPiece(x, y);
+                    isWhiteTurn = piece.getColor() == WHITE;
+                }
+            }
+            else if(x == Utils.numberOfTiles - 1 || x == Utils.numberOfTiles - 2){
+                if((model.isOccupied(x - 1, y  - 1) && !model.isOccupied(x - 2, y - 2) && piece.getColor() != model.pieceAt(x - 1, y - 1).getColor()) ||
+                   (model.isOccupied(x - 1, y  + 1) && !model.isOccupied(x - 2, y + 2) && piece.getColor() != model.pieceAt(x - 1, y + 1).getColor())){
+                    selectPiece(x, y);
+                    isWhiteTurn = piece.getColor() == WHITE;
+                } 
+            }
+        }
+        
+        if(x > 1 && x < Utils.numberOfTiles - 2 && y > 1 && y < Utils.numberOfTiles - 2){
+            if(piece.getColor() == BLACK || piece.isKing())
+            {
+                if((model.isOccupied(x - 1, y  - 1) && !model.isOccupied(x - 2, y - 2) && piece.getColor() != model.pieceAt(x - 1, y - 1).getColor()) || 
+                   (model.isOccupied(x + 1, y  - 1) && !model.isOccupied(x + 2, y - 2) && piece.getColor() != model.pieceAt(x + 1, y - 1).getColor())){
+                    selectPiece(x, y);
+                    isWhiteTurn = piece.getColor() == WHITE;
+                }
+            }
+            if(piece.getColor() == WHITE || piece.isKing()){
+                if((model.isOccupied(x - 1, y + 1) && !model.isOccupied(x - 2, y + 2) && piece.getColor() != model.pieceAt(x - 1, y + 1).getColor()) || 
+                   (model.isOccupied(x + 1, y + 1) && !model.isOccupied(x + 2, y + 2) && piece.getColor() != model.pieceAt(x + 1, y + 1).getColor())){
+                    selectPiece(x, y);
+                    isWhiteTurn = piece.getColor() == WHITE; 
+               }
+            }
+        }
     }
    
     //MEMBER
