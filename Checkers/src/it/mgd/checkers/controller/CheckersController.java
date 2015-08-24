@@ -69,7 +69,7 @@ public class CheckersController implements Controller {
                     break;
             }      
             view.update();
-        }else if(!checkTurn(model.pieceAt(x, y).getColor())){
+        }else if(model.pieceAt(x, y) != null&&!checkTurn(model.pieceAt(x, y).getColor())){
             view.invalidMove(x, y);
         }
     }
@@ -163,9 +163,8 @@ public class CheckersController implements Controller {
                         int incrementY = Integer.signum(diffY);
                         boolean Valid = true;
                         
-                        for(int i = x, j = y; i != finalX && Valid; i += incrementX, j += incrementY)
+                        for(int i = x+incrementX, j = y+incrementY; i != finalX && Valid; i += incrementX, j += incrementY)
                             Valid = !model.isOccupied(i, j);
-                        
                         if(Valid)
                             result = MoveType.MOVE;
                     }
