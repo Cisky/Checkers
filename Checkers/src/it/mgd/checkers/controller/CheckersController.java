@@ -31,28 +31,36 @@ public class CheckersController implements Controller {
     public void onNewGame(){
         model.start();
         isWhiteTurn = true;
+        Status =GameState.UNSELECTED;
         view.update();
     }
        
     /** Manages the actions to take when a tile is selected */
     @Override
     public void onClick(int x, int y){
+      
         if(model.pieceAt(x, y) != null && checkTurn(model.pieceAt(x, y).getColor())){
-            if(!isPieceSelected){
-                selectPiece(x, y);
+            
+            switch(Status){
+                case UNSELECTED:
+                   selectPiece(x,y);
+                   break;
+                case SELECTED:
+                   deselectPiece();
+                   selectPiece(x,y);
+                   break;
+               default:
+                   break;
             }
-            else{
-                deselectPiece();
-                selectPiece(x, y);
-            }
-        }else if(isPieceSelected){
-            deselectPiece();
+        }else if(Status!=GameState.UNSELECTED){
+  
             
             switch(validateMove(pieceSelectedX, pieceSelectedY, x, y)){
                 case MOVE:
                     model.movePiece(pieceSelectedX, pieceSelectedY, x, y);
                     isWhiteTurn=!isWhiteTurn;
                     promotionCheck(x,y,model.pieceAt(x,y).getColor());
+                    deselectPiece();
                     break;
 
                 case CAPTURE:
@@ -63,17 +71,27 @@ public class CheckersController implements Controller {
                     isWhiteTurn = !isWhiteTurn;
                     promotionCheck(x, y, model.pieceAt(x,y).getColor());
                     doubleCaptureCheck(x, y, model.pieceAt(x,y));
+                    if(Status==GameState.MULTIPLECAPTURE){
+                        view.deselectAllTiles();
+                        view.selectTile(x, y);  
+                    }else {
+                        deselectPiece();
+                    }
                     break;
 
                 case INVALID:
-                    view.invalidMove(x, y);
+                    if(Status!=GameState.MULTIPLECAPTURE){
+                        deselectPiece();
+                        view.invalidMove(x, y);
+                    }
                     break;
             }      
             view.update();
-        }else if(model.pieceAt(x, y) != null && !checkTurn(model.pieceAt(x, y).getColor())){
+        }else if(model.pieceAt(x, y) != null && !checkTurn(model.pieceAt(x, y).getColor())&&Status!=GameState.MULTIPLECAPTURE){
             deselectPiece();
             view.invalidMove(x, y);
         }
+         System.out.println(Status);
     }
     
     //PROTECTED MEMBER FUNCTION
@@ -101,13 +119,13 @@ public class CheckersController implements Controller {
     private void selectPiece(int x, int y){
         pieceSelectedX = x;
         pieceSelectedY = y;
-        isPieceSelected = true;
+        Status = GameState.SELECTED;
         view.selectTile(x, y);
     }
     
     /** Sets the pieces on the checkerboard as deselected and returns the tile to the original color */
     private void deselectPiece(){
-        isPieceSelected = false;
+        Status = GameState.UNSELECTED;
         view.deselectAllTiles();
     }
     
@@ -124,12 +142,12 @@ public class CheckersController implements Controller {
 
             switch(diffY){
                 case 1:
-                    if(piece.isKing() || piece.getColor() == WHITE )
+                    if(Status!=GameState.MULTIPLECAPTURE&&(piece.isKing() || piece.getColor() == WHITE) )
                         result = MoveType.MOVE;
                     break;
                 
                 case -1:
-                    if(piece.isKing() || piece.getColor() == BLACK)
+                    if(Status!=GameState.MULTIPLECAPTURE&&(piece.isKing() || piece.getColor() == BLACK))
                        result = MoveType.MOVE;
                     break;
 
@@ -140,7 +158,7 @@ public class CheckersController implements Controller {
                             if(!captured.getColor().equals(piece.getColor()) && (piece.isKing() || captured.isMan()))
                                 result = MoveType.CAPTURE;
                         }else{
-                            if(piece.isKing())
+                            if(piece.isKing()&&Status!=GameState.MULTIPLECAPTURE)
                                 result = MoveType.MOVE;
                         }
                     }
@@ -153,7 +171,7 @@ public class CheckersController implements Controller {
                             if(!captured.getColor().equals(piece.getColor()) && (piece.isKing() || captured.isMan()))
                                 result = MoveType.CAPTURE;
                         }else{
-                            if(piece.isKing())
+                            if(piece.isKing()&&Status!=GameState.MULTIPLECAPTURE)
                                 result = MoveType.MOVE;
                         }
                     }
@@ -167,7 +185,7 @@ public class CheckersController implements Controller {
                         
                         for(int i = x+incrementX, j = y+incrementY; i != finalX && Valid; i += incrementX, j += incrementY)
                             Valid = !model.isOccupied(i, j);
-                        if(Valid)
+                        if(Valid&&Status!=GameState.MULTIPLECAPTURE)
                             result = MoveType.MOVE;
                     }
                     break;
@@ -189,12 +207,14 @@ public class CheckersController implements Controller {
     
     /** Check if the piece at position (x, y) on the checkerboard can capture other pieces */
     private void doubleCaptureCheck(int x, int y, Piece piece){
+        Status = GameState.UNSELECTED;
         if(x > 1 && x < Utils.numberOfTiles - 2){
             if(y == 0 || y == 1){
                 if((model.isOccupied(x - 1, y  + 1) && !model.isOccupied(x - 2, y + 2) && piece.getColor() != model.pieceAt(x - 1, y + 1).getColor()) || 
                    (model.isOccupied(x + 1, y  + 1) && !model.isOccupied(x + 2, y + 2) && piece.getColor() != model.pieceAt(x + 1, y + 1).getColor())){
                     selectPiece(x, y);
                     isWhiteTurn = piece.getColor() == WHITE;
+                    Status = GameState.MULTIPLECAPTURE;
                 }
             }
             else if(y == Utils.numberOfTiles - 1 || y == Utils.numberOfTiles - 2){
@@ -202,6 +222,7 @@ public class CheckersController implements Controller {
                    (model.isOccupied(x + 1, y  - 1) && !model.isOccupied(x + 2, y - 2) && piece.getColor() != model.pieceAt(x + 1, y - 1).getColor())){
                     selectPiece(x, y);
                     isWhiteTurn = piece.getColor() == WHITE;
+                     Status = GameState.MULTIPLECAPTURE;
                 }                    
             }
         }
@@ -212,6 +233,7 @@ public class CheckersController implements Controller {
                    (model.isOccupied(x + 1, y  + 1) && !model.isOccupied(x + 2, y + 2) && piece.getColor() != model.pieceAt(x + 1, y + 1).getColor())){
                     selectPiece(x, y);
                     isWhiteTurn = piece.getColor() == WHITE;
+                     Status = GameState.MULTIPLECAPTURE;
                 }
             }
             else if(x == Utils.numberOfTiles - 1 || x == Utils.numberOfTiles - 2){
@@ -219,6 +241,7 @@ public class CheckersController implements Controller {
                    (model.isOccupied(x - 1, y  + 1) && !model.isOccupied(x - 2, y + 2) && piece.getColor() != model.pieceAt(x - 1, y + 1).getColor())){
                     selectPiece(x, y);
                     isWhiteTurn = piece.getColor() == WHITE;
+                     Status = GameState.MULTIPLECAPTURE;
                 } 
             }
         }
@@ -230,6 +253,7 @@ public class CheckersController implements Controller {
                    (model.isOccupied(x + 1, y  - 1) && !model.isOccupied(x + 2, y - 2) && piece.getColor() != model.pieceAt(x + 1, y - 1).getColor())){
                     selectPiece(x, y);
                     isWhiteTurn = piece.getColor() == WHITE;
+                     Status = GameState.MULTIPLECAPTURE;
                 }
             }
             if(piece.getColor() == WHITE || piece.isKing()){
@@ -237,6 +261,7 @@ public class CheckersController implements Controller {
                    (model.isOccupied(x + 1, y + 1) && !model.isOccupied(x + 2, y + 2) && piece.getColor() != model.pieceAt(x + 1, y + 1).getColor())){
                     selectPiece(x, y);
                     isWhiteTurn = piece.getColor() == WHITE; 
+                    Status = GameState.MULTIPLECAPTURE;
                }
             }
         }
@@ -245,7 +270,13 @@ public class CheckersController implements Controller {
     //MEMBER
     private final Model model;      /** Model of checker game */
     private final View view;        /** View of checker game */
-    private boolean isPieceSelected;/** The piece on tile is selected or unselected */
+    private GameState Status = GameState.UNSELECTED;;
+    /** GameState on tile is selected or unselected */
+    private enum GameState{    
+        SELECTED,
+        UNSELECTED,
+        MULTIPLECAPTURE
+    }
     private int pieceSelectedX;     /** Position X of the piece selected on checkerboard */
     private int pieceSelectedY;     /** Position Y of the piece selected on checkerboard */
     private boolean isWhiteTurn;    /** Is turn of the white piece or of the black piece */
